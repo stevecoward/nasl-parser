@@ -37,6 +37,7 @@ class NaslScript():
     category = ''
 
     def __init__(self, contents):
+        contents = contents.replace('\n',' ').replace('"','').replace('  ', ' ')
         for var in dir(self):
             if not var.startswith('_'):
                 pattern = re.compile('script_%(var)s\(([^;]*)\)' % {'var': var})
