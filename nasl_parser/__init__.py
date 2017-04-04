@@ -4,15 +4,15 @@ from fieldtypes import SingleNumericType, GenericTextType, LocalizedTextType, Mu
 class NaslScriptMethodParams():
     def __init__(self, var, val):
         val = val[0] if len(val) == 1 else val
-        if var == 'id':
+        if var in ['id']:
             self.param = SingleNumericType(val)
-        elif var in ['version', 'cvs_date', 'set_cvss_base_vector', 'set_cvss_temporal_vector', 'category']:
+        elif var in ['version', 'cvs_date', 'set_cvss_base_vector', 'set_cvss_temporal_vector', 'script_set_cvss3_base_vector', 'script_set_cvss3_temporal_vector', 'category']:
             self.param = GenericTextType(val)
         elif var in ['name', 'summary', 'family', 'copyright']:
             self.param = LocalizedTextType(val)
         elif var in ['cve_id']:
             self.param = MultiStringType(val)
-        elif var in ['bugtraq_id', 'osvdb_id']:
+        elif var in ['bugtraq_id', 'osvdb_id', 'cwe_id']:
             self.param = MultiNumericType(val)
         elif var in ['xref', 'set_attribute']:
             self.param = GenericDictType(val)
@@ -26,6 +26,7 @@ class NaslScript():
     version = ''
     cvs_date = ''
     cve_id = []
+    cwe_id = []
     bugtraq_id = []
     osvdb_id = []
     family = ''
@@ -34,6 +35,8 @@ class NaslScript():
     set_attribute = {}
     set_cvss_base_vector = ''
     set_cvss_temporal_vector = ''
+    set_cvss3_base_vector = ''
+    set_cvss3_temporal_vector = ''
     category = ''
 
     def __init__(self, contents):
