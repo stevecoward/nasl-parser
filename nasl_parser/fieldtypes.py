@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 class RegexValueFinder():
     pattern = re.compile(r'.*')
@@ -41,6 +42,12 @@ class GenericDictType(RegexValueFinder):
             except:
                 pass
         self.values = attributes
+
+class GenericDateTimeType(RegexValueFinder):
+    def __init__(self, value):
+        self.pattern = re.compile(r'\s+(.+)\s+')
+        RegexValueFinder.__init__(self, value)
+        self.values = datetime.strptime(self.values[0], '%Y/%m/%d %H:%M:%S')
 
 class GenericTextType(RegexValueFinder):
     def __init__(self, value):

@@ -1,12 +1,13 @@
 import re
-from fieldtypes import SingleNumericType, GenericTextType, LocalizedTextType, MultiStringType, MultiNumericType, GenericDictType
+from datetime import datetime
+from fieldtypes import SingleNumericType, GenericTextType, LocalizedTextType, MultiStringType, MultiNumericType, GenericDictType, GenericDateTimeType
 
 class NaslScriptMethodParams():
     def __init__(self, var, val):
         val = val[0] if len(val) == 1 else val
         if var in ['id']:
             self.param = SingleNumericType(val)
-        elif var in ['version', 'cvs_date', 'set_cvss_base_vector', 'set_cvss_temporal_vector', 'script_set_cvss3_base_vector', 'script_set_cvss3_temporal_vector', 'category']:
+        elif var in ['version', 'set_cvss_base_vector', 'set_cvss_temporal_vector', 'script_set_cvss3_base_vector', 'script_set_cvss3_temporal_vector', 'category']:
             self.param = GenericTextType(val)
         elif var in ['name', 'summary', 'family', 'copyright']:
             self.param = LocalizedTextType(val)
@@ -16,6 +17,8 @@ class NaslScriptMethodParams():
             self.param = MultiNumericType(val)
         elif var in ['xref', 'set_attribute']:
             self.param = GenericDictType(val)
+        elif var in ['cvs_date']:
+            self.param = GenericDateTimeType(val)
         else:
             self.param = None
 
@@ -62,7 +65,7 @@ class NaslScript():
             'Name': self.name,
             'Summary': self.summary,
             'Version': self.version,
-            'CVS Date': self.cvs_date,
+            'CVS Date': self.cvs_date.strftime('%Y-%m-%d %H:%M:%S'),
             'CVE IDs': self.cve_id,
             'CWE IDs': self.cwe_id,
             'Bugtraq IDs': self.bugtraq_id,
@@ -81,7 +84,7 @@ class NaslScript():
             'name': self.name,
             'summary': self.summary,
             'version': self.version,
-            'cvs_date': self.cvs_date,
+            'cvs_date': self.cvs_date.strftime('%Y-%m-%d %H:%M:%S'),
             'cve_id': self.cve_id,
             'cwe_id': self.cwe_id,
             'bugtraq_id': self.bugtraq_id,
