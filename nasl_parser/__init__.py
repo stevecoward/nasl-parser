@@ -1,13 +1,13 @@
 import re
 from datetime import datetime
-from fieldtypes import SingleNumericType, GenericTextType, LocalizedTextType, MultiStringType, MultiNumericType, GenericDictType, GenericDateTimeType
+from fieldtypes import SingleNumericType, GenericTextType, LocalizedTextType, MultiStringType, MultiNumericType, GenericDictType, GenericDateTimeType, VersionType
 
 class NaslScriptMethodParams():
     def __init__(self, var, val):
         val = val[0] if len(val) == 1 else val
         if var in ['id']:
             self.param = SingleNumericType(val)
-        elif var in ['version', 'set_cvss_base_vector', 'set_cvss_temporal_vector', 'script_set_cvss3_base_vector', 'script_set_cvss3_temporal_vector', 'category']:
+        elif var in ['set_cvss_base_vector', 'set_cvss_temporal_vector', 'script_set_cvss3_base_vector', 'script_set_cvss3_temporal_vector', 'category']:
             self.param = GenericTextType(val)
         elif var in ['name', 'summary', 'family', 'copyright']:
             self.param = LocalizedTextType(val)
@@ -19,6 +19,8 @@ class NaslScriptMethodParams():
             self.param = GenericDictType(val)
         elif var in ['cvs_date']:
             self.param = GenericDateTimeType(val)
+        elif var in ['version']:
+            self.param = VersionType(val)
         else:
             self.param = None
 

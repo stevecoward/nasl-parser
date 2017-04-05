@@ -49,6 +49,12 @@ class GenericDateTimeType(RegexValueFinder):
         RegexValueFinder.__init__(self, value)
         self.values = datetime.strptime(self.values[0], '%Y/%m/%d %H:%M:%S')
 
+class VersionType(RegexValueFinder):
+    def __init__(self, value):
+        self.pattern = re.compile(r'(\d+\.\d+)')
+        RegexValueFinder.__init__(self, value)
+        self.values = self.values[0]
+
 class GenericTextType(RegexValueFinder):
     def __init__(self, value):
         self.pattern = re.compile(r'(.+)')
