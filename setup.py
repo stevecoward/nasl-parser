@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
       name='nasl-parser',
-      version='0.1.3',
+      version='0.1.4',
       author='Steve Coward',
       author_email='steve.coward@gmail.com',
       url='https://github.com/stevecoward/nasl-parser',
