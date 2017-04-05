@@ -62,12 +62,13 @@ class NaslScript():
                     pass
 
     def _todict(self, pretty=False):
+        self.cvs_date = self.cvs_date.strftime('%Y-%m-%d %H:%M:%S') if isinstance(self.cvs_date, datetime) else self.cvs_date
         return {
             'ID': self.id,
             'Name': self.name,
             'Summary': self.summary,
             'Version': self.version,
-            'CVS Date': self.cvs_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'CVS Date': self.cvs_date,
             'CVE IDs': self.cve_id,
             'CWE IDs': self.cwe_id,
             'Bugtraq IDs': self.bugtraq_id,
@@ -86,7 +87,7 @@ class NaslScript():
             'name': self.name,
             'summary': self.summary,
             'version': self.version,
-            'cvs_date': self.cvs_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'cvs_date': self.cvs_date,
             'cve_id': self.cve_id,
             'cwe_id': self.cwe_id,
             'bugtraq_id': self.bugtraq_id,
