@@ -25,26 +25,26 @@ class NaslScriptMethodParams():
             self.param = None
 
 class NaslScript():
-    id = 0
-    name = ''
-    summary = ''
-    version = ''
-    cvs_date = ''
-    cve_id = []
-    cwe_id = []
-    bugtraq_id = []
-    osvdb_id = []
-    family = ''
-    copyright = ''
-    xref = {}
-    set_attribute = {}
-    set_cvss_base_vector = ''
-    set_cvss_temporal_vector = ''
-    set_cvss3_base_vector = ''
-    set_cvss3_temporal_vector = ''
-    category = ''
 
     def __init__(self, contents):
+        self.id = 0
+        self.name = ''
+        self.summary = ''
+        self.version = ''
+        self.cvs_date = ''
+        self.cve_id = []
+        self.cwe_id = []
+        self.bugtraq_id = []
+        self.osvdb_id = []
+        self.family = ''
+        self.copyright = ''
+        self.xref = {}
+        self.set_attribute = {}
+        self.set_cvss_base_vector = ''
+        self.set_cvss_temporal_vector = ''
+        self.set_cvss3_base_vector = ''
+        self.set_cvss3_temporal_vector = ''
+        self.category = ''
         contents = contents.replace('\n',' ').replace('"','').replace('  ', ' ')
         for var in dir(self):
             if not var.startswith('_'):
