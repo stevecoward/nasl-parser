@@ -1,4 +1,7 @@
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 setup(
     name='nasl-parser',
@@ -8,8 +11,6 @@ setup(
     url='https://github.com/stevecoward/nasl-parser',
     license='LICENSE',
     description='Parses a Nessus Script Language script plugin and extracts details from it.',
-    install_requires=[
-        'six',
-    ],
     packages=['nasl_parser'],
+    install_requires=['six',],
 )
