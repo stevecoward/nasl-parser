@@ -37,7 +37,7 @@ class GenericDictType(RegexValueFinder):
             parsed_attribute = attribute.replace(',value', ', value').split(', value:')
             try:
                 attributes.update({
-                    parsed_attribute[0].split(':')[1]: parsed_attribute[1].strip(),
+                    parsed_attribute[0].split(':')[1].strip().strip("'"): parsed_attribute[1].strip(),
                 })
             except:
                 pass
