@@ -1,4 +1,6 @@
 env/
 dist/
+nasl_parser.egg-info/
+.idea/
 *.pyc
 .DS_Store
