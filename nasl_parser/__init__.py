@@ -1,13 +1,20 @@
 import re
 from datetime import datetime
-from fieldtypes import SingleNumericType, GenericTextType, LocalizedTextType, MultiStringType, MultiNumericType, GenericDictType, GenericDateTimeType, VersionType
+from nasl_parser.fieldtypes import SingleNumericType, GenericTextType,\
+    LocalizedTextType, MultiStringType, MultiNumericType, GenericDictType, \
+    GenericListType, GenericDateTimeType, VersionType
 
-class NaslScriptMethodParams():
+
+class NaslScriptMethodParams(object):
     def __init__(self, var, val):
         val = val[0] if len(val) == 1 else val
         if var in ['id']:
             self.param = SingleNumericType(val)
-        elif var in ['set_cvss_base_vector', 'set_cvss_temporal_vector', 'script_set_cvss3_base_vector', 'script_set_cvss3_temporal_vector', 'category']:
+        elif var in ['set_cvss_base_vector',
+                     'set_cvss_temporal_vector',
+                     'script_set_cvss3_base_vector',
+                     'script_set_cvss3_temporal_vector',
+                     'category']:
             self.param = GenericTextType(val)
         elif var in ['name', 'summary', 'family', 'copyright']:
             self.param = LocalizedTextType(val)
@@ -17,6 +24,8 @@ class NaslScriptMethodParams():
             self.param = MultiNumericType(val)
         elif var in ['xref', 'set_attribute']:
             self.param = GenericDictType(val)
+        elif var in ['check']:
+            self.param = GenericListType(val)
         elif var in ['cvs_date']:
             self.param = GenericDateTimeType(val)
         elif var in ['version']:
@@ -24,13 +33,15 @@ class NaslScriptMethodParams():
         else:
             self.param = None
 
-class NaslScript():
+
+class NaslScript(object):
 
     def __init__(self, contents):
         self.id = 0
         self.name = ''
         self.summary = ''
         self.version = ''
+        self.check = []
         self.cvs_date = ''
         self.cve_id = []
         self.cwe_id = []
@@ -45,10 +56,28 @@ class NaslScript():
         self.set_cvss3_base_vector = ''
         self.set_cvss3_temporal_vector = ''
         self.category = ''
-        contents = contents.replace('\n',' ').replace('"','').replace('  ', ' ')
+        contents = contents.replace('\n', ' ')
+        contents = contents.replace('"', '').replace('\'', '')
+        while '  ' in contents:
+            contents = contents.replace('  ', ' ')
         for var in dir(self):
             if not var.startswith('_'):
-                pattern = re.compile('script_%(var)s\(([^;]*)\)' % {'var': var})
+                pattern = re.compile('script_%(var)s\s?\(\s?(.*?)\)\s?;' % {'var': var})
+
+                # not all keys exist in every file. gracefully skip
+                try:
+                    param_text = pattern.findall(contents)
+
+                    if len(param_text):
+                        script_method = NaslScriptMethodParams(var, param_text)
+                        setattr(self, var, script_method.param.values)
+                    else:
+                        raise Exception('Unable to match regex pattern.')
+                except Exception:
+                    pass
+
+                # Get the packages that are affected (Checks)
+                pattern = re.compile('if \(rpm_%(var)s\s?\(\s?([^;]*)\)\) flag\+\+' % {'var': var})
 
                 # not all keys exist in every file. gracefully skip
                 try:
@@ -58,16 +87,18 @@ class NaslScript():
                         setattr(self, var, script_method.param.values)
                     else:
                         raise Exception('Unable to match regex pattern.')
-                except:
+                except Exception:
                     pass
 
-    def _todict(self, pretty=False):
-        self.cvs_date = self.cvs_date.strftime('%Y-%m-%d %H:%M:%S') if isinstance(self.cvs_date, datetime) else self.cvs_date
+    def to_dict(self, pretty=False):
+        self.cvs_date = self.cvs_date.strftime('%Y-%m-%d %H:%M:%S') \
+            if isinstance(self.cvs_date, datetime) else self.cvs_date
         return {
             'ID': self.id,
             'Name': self.name,
             'Summary': self.summary,
             'Version': self.version,
+            'Checks': self.check,
             'CVS Date': self.cvs_date,
             'CVE IDs': self.cve_id,
             'CWE IDs': self.cwe_id,
@@ -87,6 +118,7 @@ class NaslScript():
             'name': self.name,
             'summary': self.summary,
             'version': self.version,
+            'checks': self.check,
             'cvs_date': self.cvs_date,
             'cve_id': self.cve_id,
             'cwe_id': self.cwe_id,
