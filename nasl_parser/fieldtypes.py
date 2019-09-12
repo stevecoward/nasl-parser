@@ -68,25 +68,18 @@ class GenericDictType(RegexValueFinder):
         self.values = attributes
 
 
-class GenericListType(RegexValueFinder):
+class GenericListDictType(RegexValueFinder):
     def __init__(self, value):
         attributes = []
         if not isinstance(value, list):
             value = [value]
 
-        def pack(parts):
-            if len(parts) == 1:
-                return parts
-            elif len(parts):
-                return {parts[0]: pack(parts[1:])}
-            return parts
-
-        for attribute in value:
-            list_att = []
-            for item in attribute.split(','):
-                list_att.append(item.split(':')[1])
-
-            attributes.append(list_att)
+        for item in value:
+            attrib_dict = {}
+            for attribute in item.split(','):
+                key, val = attribute.strip().split(':')
+                attrib_dict.update({key: val})
+            attributes.append(attrib_dict)
 
         self.values = attributes
 
