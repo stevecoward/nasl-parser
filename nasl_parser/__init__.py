@@ -1,8 +1,15 @@
 import re
 from datetime import datetime
-from nasl_parser.fieldtypes import SingleNumericType, GenericTextType,\
-    LocalizedTextType, MultiStringType, MultiNumericType, GenericDictType, \
-    GenericListDictType, GenericDateTimeType, VersionType
+import six
+
+if six.PY2:
+    from fieldtypes import SingleNumericType, GenericTextType, \
+        LocalizedTextType, MultiStringType, MultiNumericType, GenericDictType, \
+        GenericListDictType, GenericDateTimeType, VersionType
+else:
+    from .fieldtypes import SingleNumericType, GenericTextType, \
+        LocalizedTextType, MultiStringType, MultiNumericType, GenericDictType, \
+        GenericListDictType, GenericDateTimeType, VersionType
 
 
 class NaslScriptMethodParams(object):
