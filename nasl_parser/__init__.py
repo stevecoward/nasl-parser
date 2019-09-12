@@ -2,7 +2,7 @@ import re
 from datetime import datetime
 from nasl_parser.fieldtypes import SingleNumericType, GenericTextType,\
     LocalizedTextType, MultiStringType, MultiNumericType, GenericDictType, \
-    GenericListType, GenericDateTimeType, VersionType
+    GenericListDictType, GenericDateTimeType, VersionType
 
 
 class NaslScriptMethodParams(object):
@@ -25,7 +25,7 @@ class NaslScriptMethodParams(object):
         elif var in ['xref', 'set_attribute']:
             self.param = GenericDictType(val)
         elif var in ['check']:
-            self.param = GenericListType(val)
+            self.param = GenericListDictType(val)
         elif var in ['cvs_date']:
             self.param = GenericDateTimeType(val)
         elif var in ['version']:
@@ -77,7 +77,9 @@ class NaslScript(object):
                     pass
 
                 # Get the packages that are affected (Checks)
-                pattern = re.compile('if \(rpm_%(var)s\s?\(\s?([^;]*)\)\) flag\+\+' % {'var': var})
+                # not sure which pattern is faster... they're both pretty slow
+                # pattern = re.compile(r'if \(.*?%(var)s\s?\(\s?([^;]*)\)\) flag\+\+;' % {'var': var})
+                pattern = re.compile(r'if \(.*?%(var)s\s?\(([^;]*)\)\) flag\+\+;' % {'var': var})
 
                 # not all keys exist in every file. gracefully skip
                 try:
