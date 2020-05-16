@@ -1,4 +1,4 @@
-# nasl-parser
+# nasl-parser - NOT ACTIVELY MAINTAINED
 
 ### Description
 
